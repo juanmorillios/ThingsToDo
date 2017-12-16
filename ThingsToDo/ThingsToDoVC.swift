@@ -13,9 +13,19 @@ class ThingsToDoVC: UITableViewController {
     //Data Sample
     var itemArray = ["Ir al Cine","Comprar Ropa","Ir al Supermercado","Visitar a la fámilia","Salir a comprar Leche"]
     
+    //MARK - Add Persisten Local
+    var defaults = UserDefaults.standard
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        upDateDataArrayItems()
+    }
+    
+    func upDateDataArrayItems() {
+        if let items = defaults.array(forKey: "ListItemsArray") as? [String] {
+            itemArray = items
+        }
     }
     
     // MARK: Métodos DataSource
@@ -37,9 +47,7 @@ class ThingsToDoVC: UITableViewController {
         } else {
             tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
         }
-        
         tableView.deselectRow(at: indexPath, animated: true)
-        print("Seleccionado: \(itemArray[indexPath.row])")
     }
     
     //MARK - add New Items
@@ -49,6 +57,9 @@ class ThingsToDoVC: UITableViewController {
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
            
             self.itemArray.append(textField.text ?? "")
+            
+            self.defaults.set(self.itemArray, forKey: "ListItemsArray")
+            
             self.tableView.reloadData()
         }
         alert.addTextField { (alertTextField) in
