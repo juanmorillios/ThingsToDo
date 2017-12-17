@@ -11,7 +11,7 @@ import UIKit
 class ThingsToDoVC: UITableViewController {
     
     //Data Sample
-    var itemArray = ["Ir al Cine","Comprar Ropa","Ir al Supermercado","Visitar a la fámilia","Salir a comprar Leche"]
+   var arrayItem = [Item]()
     
     //MARK - Add Persisten Local
     var defaults = UserDefaults.standard
@@ -19,34 +19,61 @@ class ThingsToDoVC: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        upDateDataArrayItems()
+        //upDateDataArrayItems()
+      
+        let newItem = Item()
+        newItem.title = "Comprar leche"
+        newItem.done = true
+        arrayItem.append(newItem)
+        
+        let newItem2 = Item()
+        newItem2.title = "Ir al cine"
+        newItem2.done = true
+        arrayItem.append(newItem2)
+        
+        let newItem3 = Item()
+        newItem3.title = "Ir a la montaña"
+        arrayItem.append(newItem3)
+        
+        let newItem4 = Item()
+        newItem4.title = "Salir al parque"
+        newItem4.done = false
+        arrayItem.append(newItem4)
+      
     }
     
-    func upDateDataArrayItems() {
-        if let items = defaults.array(forKey: "ListItemsArray") as? [String] {
-            itemArray = items
-        }
-    }
+//    func upDateDataArrayItems() {
+//        if let items = defaults.array(forKey: "ListItemsArray") as? [String] {
+//            itemArray = items
+//  }
+//    }
     
     // MARK: Métodos DataSource
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return itemArray.count
+        return arrayItem.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ThingsToDoCell", for: indexPath)
-        cell.textLabel?.text = itemArray[indexPath.row]
+        let itemArray = arrayItem[indexPath.row]
+        cell.textLabel?.text = itemArray.title
+   
+        if arrayItem[indexPath.row].done == true {
+            cell.accessoryType = .checkmark
+        } else {
+            cell.accessoryType = .none
+        }
+        
         return cell
     }
     
     //MARK: Implementar Mñetodos del Delegado
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .none
-        } else {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        }
+        arrayItem[indexPath.row].done = !arrayItem[indexPath.row].done
+        
+        tableView.reloadData()
+        
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
@@ -56,9 +83,12 @@ class ThingsToDoVC: UITableViewController {
         let alert = UIAlertController(title: "Add New ThingsTodo Item ", message: "", preferredStyle: .alert)
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
            
-            self.itemArray.append(textField.text ?? "")
+            let newItem = Item()
+            newItem.title = textField.text!
             
-            self.defaults.set(self.itemArray, forKey: "ListItemsArray")
+            self.arrayItem.append(newItem)
+            
+           // self.defaults.set(self.arrayItem, forKey: "ListItemsArray")
             
             self.tableView.reloadData()
         }
