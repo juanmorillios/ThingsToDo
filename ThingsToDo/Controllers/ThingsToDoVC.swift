@@ -19,16 +19,14 @@ class ThingsToDoVC: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //upDateDataArrayItems()
+        upDateDataArrayItems()
       
         let newItem = Item()
         newItem.title = "Comprar leche"
-        newItem.done = true
         arrayItem.append(newItem)
         
         let newItem2 = Item()
         newItem2.title = "Ir al cine"
-        newItem2.done = true
         arrayItem.append(newItem2)
         
         let newItem3 = Item()
@@ -37,16 +35,15 @@ class ThingsToDoVC: UITableViewController {
         
         let newItem4 = Item()
         newItem4.title = "Salir al parque"
-        newItem4.done = false
         arrayItem.append(newItem4)
       
     }
     
-//    func upDateDataArrayItems() {
-//        if let items = defaults.array(forKey: "ListItemsArray") as? [String] {
-//            itemArray = items
-//  }
-//    }
+    func upDateDataArrayItems() {
+        if let items = defaults.array(forKey: "ListItemsArray") as? [Item] {
+            arrayItem = items
+  }
+    }
     
     // MARK: Métodos DataSource
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -58,11 +55,7 @@ class ThingsToDoVC: UITableViewController {
         let itemArray = arrayItem[indexPath.row]
         cell.textLabel?.text = itemArray.title
    
-        if arrayItem[indexPath.row].done == true {
-            cell.accessoryType = .checkmark
-        } else {
-            cell.accessoryType = .none
-        }
+        cell.accessoryType = itemArray.done ? .checkmark : .none
         
         return cell
     }
